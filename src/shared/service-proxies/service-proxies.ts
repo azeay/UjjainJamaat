@@ -668,6 +668,7 @@ export class RoleServiceProxy {
 }
 
 
+@Injectable()
 export class MasjidServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
