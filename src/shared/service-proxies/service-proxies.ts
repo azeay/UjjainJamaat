@@ -667,7 +667,7 @@ export class RoleServiceProxy {
     }
 }
 
-
+//masjid ah-injectable
 @Injectable()
 export class MasjidServiceProxy {
     private http: HttpClient;
@@ -1128,9 +1128,4876 @@ export class MasjidServiceProxy {
         return _observableOf<MasjidDtoPagedResultDto>(<any>null);
     }
 }
+//masjid
+
+export class CreateMasjidDto implements ICreateMasjidDto {
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+
+    constructor(data?: ICreateMasjidDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.normalizedName = _data["normalizedName"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["grantedPermissions"])) {
+                this.grantedPermissions = [] as any;
+                for (let item of _data["grantedPermissions"])
+                    this.grantedPermissions.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateMasjidDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMasjidDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["normalizedName"] = this.normalizedName;
+        data["description"] = this.description;
+        if (Array.isArray(this.grantedPermissions)) {
+            data["grantedPermissions"] = [];
+            for (let item of this.grantedPermissions)
+                data["grantedPermissions"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): CreateMasjidDto {
+        const json = this.toJSON();
+        let result = new CreateMasjidDto();
+        result.init(json);
+        return result;
+    }
+}
+export interface ICreateMasjidDto {
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+}
+
+//PositionStart
+//Position1
+//floor ah
+@Injectable()
+ export class FloorServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    create(body: CreateFloorDto | undefined): Observable<FloorDto> {
+        let url_ = this.baseUrl + "/api/services/app/Floor/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<FloorDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FloorDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<FloorDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = FloorDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FloorDto>(<any>null);
+    }
+
+    /**
+     * @param permission (optional) 
+     * @return Success
+     */
+    getFloors(permission: string | undefined): Observable<FloorListDtoListResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/Floor/GetFloors?";
+        if (permission === null)
+            throw new Error("The parameter 'permission' cannot be null.");
+        else if (permission !== undefined)
+            url_ += "Permission=" + encodeURIComponent("" + permission) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetFloors(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetFloors(<any>response_);
+                } catch (e) {
+                    return <Observable<FloorListDtoListResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FloorListDtoListResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetFloors(response: HttpResponseBase): Observable<FloorListDtoListResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = FloorListDtoListResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FloorListDtoListResultDto>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    update(body: FloorDto | undefined): Observable<FloorDto> {
+        let url_ = this.baseUrl + "/api/services/app/Floor/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<FloorDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FloorDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<FloorDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = FloorDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FloorDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Floor/Delete?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    getAllPermissions(): Observable<PermissionDtoListResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/Floor/GetAllPermissions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllPermissions(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllPermissions(<any>response_);
+                } catch (e) {
+                    return <Observable<PermissionDtoListResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PermissionDtoListResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllPermissions(response: HttpResponseBase): Observable<PermissionDtoListResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PermissionDtoListResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PermissionDtoListResultDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getFloorForEdit(id: number | undefined): Observable<GetFloorForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/Floor/GetFloorForEdit?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetFloorForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetFloorForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetFloorForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetFloorForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetFloorForEdit(response: HttpResponseBase): Observable<GetFloorForEditOutput> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetFloorForEditOutput.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetFloorForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    get(id: number | undefined): Observable<FloorDto> {
+        let url_ = this.baseUrl + "/api/services/app/Floor/Get?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<FloorDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FloorDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<FloorDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = FloorDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FloorDto>(<any>null);
+    }
+
+    /**
+     * @param keyword (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(keyword: string | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<FloorDtoPagedResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/Floor/GetAll?";
+        if (keyword === null)
+            throw new Error("The parameter 'keyword' cannot be null.");
+        else if (keyword !== undefined)
+            url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<FloorDtoPagedResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FloorDtoPagedResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<FloorDtoPagedResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = FloorDtoPagedResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FloorDtoPagedResultDto>(<any>null);
+    }
+} 
+//Position2
+
+//Floor
+export class CreateFloorDto implements ICreateFloorDto {
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+
+    constructor(data?: ICreateFloorDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.normalizedName = _data["normalizedName"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["grantedPermissions"])) {
+                this.grantedPermissions = [] as any;
+                for (let item of _data["grantedPermissions"])
+                    this.grantedPermissions.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateFloorDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateFloorDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["normalizedName"] = this.normalizedName;
+        data["description"] = this.description;
+        if (Array.isArray(this.grantedPermissions)) {
+            data["grantedPermissions"] = [];
+            for (let item of this.grantedPermissions)
+                data["grantedPermissions"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): CreateFloorDto {
+        const json = this.toJSON();
+        let result = new CreateFloorDto();
+        result.init(json);
+        return result;
+    }
+}
+export interface ICreateFloorDto {
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+}
+//Floor end
+
+//Position3
+//Floor3
+export class GetFloorForEditOutput implements IGetFloorForEditOutput {
+    role: FloorEditDto;
+    permissions: FlatPermissionDto[] | undefined;
+    grantedPermissionNames: string[] | undefined;
+
+    constructor(data?: IGetFloorForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.role = _data["role"] ? FloorEditDto.fromJS(_data["role"]) : <any>undefined;
+            if (Array.isArray(_data["permissions"])) {
+                this.permissions = [] as any;
+                for (let item of _data["permissions"])
+                    this.permissions.push(FlatPermissionDto.fromJS(item));
+            }
+            if (Array.isArray(_data["grantedPermissionNames"])) {
+                this.grantedPermissionNames = [] as any;
+                for (let item of _data["grantedPermissionNames"])
+                    this.grantedPermissionNames.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): GetFloorForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetFloorForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["role"] = this.role ? this.role.toJSON() : <any>undefined;
+        if (Array.isArray(this.permissions)) {
+            data["permissions"] = [];
+            for (let item of this.permissions)
+                data["permissions"].push(item.toJSON());
+        }
+        if (Array.isArray(this.grantedPermissionNames)) {
+            data["grantedPermissionNames"] = [];
+            for (let item of this.grantedPermissionNames)
+                data["grantedPermissionNames"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): GetFloorForEditOutput {
+        const json = this.toJSON();
+        let result = new GetFloorForEditOutput();
+        result.init(json);
+        return result;
+    }
+}
+export interface IGetFloorForEditOutput {
+    role: FloorEditDto;
+    permissions: FlatPermissionDto[] | undefined;
+    grantedPermissionNames: string[] | undefined;
+}
+//Floor3 End
+
+//Position4
+//Floor4
+export class FloorDto implements IFloorDto {
+    id: number;
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+
+    constructor(data?: IFloorDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.normalizedName = _data["normalizedName"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["grantedPermissions"])) {
+                this.grantedPermissions = [] as any;
+                for (let item of _data["grantedPermissions"])
+                    this.grantedPermissions.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): FloorDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FloorDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["normalizedName"] = this.normalizedName;
+        data["description"] = this.description;
+        if (Array.isArray(this.grantedPermissions)) {
+            data["grantedPermissions"] = [];
+            for (let item of this.grantedPermissions)
+                data["grantedPermissions"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): FloorDto {
+        const json = this.toJSON();
+        let result = new FloorDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IFloorDto {
+    id: number;
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+}
+
+export class FloorDtoListResultDto implements IFloorDtoListResultDto {
+    items: FloorDto[] | undefined;
+
+    constructor(data?: IFloorDtoListResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(FloorDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): FloorDtoListResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FloorDtoListResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): FloorDtoListResultDto {
+        const json = this.toJSON();
+        let result = new FloorDtoListResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IFloorDtoListResultDto {
+    items: FloorDto[] | undefined;
+}
+
+export class FloorDtoPagedResultDto implements IFloorDtoPagedResultDto {
+    items: FloorDto[] | undefined;
+    totalCount: number;
+
+    constructor(data?: IFloorDtoPagedResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(FloorDto.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+        }
+    }
+
+    static fromJS(data: any): FloorDtoPagedResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FloorDtoPagedResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount;
+        return data; 
+    }
+
+    clone(): FloorDtoPagedResultDto {
+        const json = this.toJSON();
+        let result = new FloorDtoPagedResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IFloorDtoPagedResultDto {
+    items: FloorDto[] | undefined;
+    totalCount: number;
+}
+
+export class FloorEditDto implements IFloorEditDto {
+    id: number;
+    name: string;
+    displayName: string;
+    description: string | undefined;
+    isStatic: boolean;
+
+    constructor(data?: IFloorEditDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.description = _data["description"];
+            this.isStatic = _data["isStatic"];
+        }
+    }
+
+    static fromJS(data: any): FloorEditDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FloorEditDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["description"] = this.description;
+        data["isStatic"] = this.isStatic;
+        return data; 
+    }
+
+    clone(): FloorEditDto {
+        const json = this.toJSON();
+        let result = new FloorEditDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IFloorEditDto {
+    id: number;
+    name: string;
+    displayName: string;
+    description: string | undefined;
+    isStatic: boolean;
+}
+
+export class FloorListDto implements IFloorListDto {
+    id: number;
+    name: string | undefined;
+    displayName: string | undefined;
+    isStatic: boolean;
+    isDefault: boolean;
+    creationTime: moment.Moment;
+
+    constructor(data?: IFloorListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.isStatic = _data["isStatic"];
+            this.isDefault = _data["isDefault"];
+            this.creationTime = _data["creationTime"] ? moment(_data["creationTime"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): FloorListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FloorListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["isStatic"] = this.isStatic;
+        data["isDefault"] = this.isDefault;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        return data; 
+    }
+
+    clone(): FloorListDto {
+        const json = this.toJSON();
+        let result = new FloorListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IFloorListDto {
+    id: number;
+    name: string | undefined;
+    displayName: string | undefined;
+    isStatic: boolean;
+    isDefault: boolean;
+    creationTime: moment.Moment;
+}
+
+export class FloorListDtoListResultDto implements IFloorListDtoListResultDto {
+    items: FloorListDto[] | undefined;
+
+    constructor(data?: IFloorListDtoListResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(FloorListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): FloorListDtoListResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FloorListDtoListResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): FloorListDtoListResultDto {
+        const json = this.toJSON();
+        let result = new FloorListDtoListResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IFloorListDtoListResultDto {
+    items: FloorListDto[] | undefined;
+}
+//Floor4 End
+@Injectable()
+
+//Position End
+
+
+
+
+
+//PositionStart
+//Position1
+//floor ah
+@Injectable()
+ export class MiqaatServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    create(body: CreateMiqaatDto | undefined): Observable<MiqaatDto> {
+        let url_ = this.baseUrl + "/api/services/app/Miqaat/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<MiqaatDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatDto>(<any>null);
+    }
+
+    /**
+     * @param permission (optional) 
+     * @return Success
+     */
+    getMiqaats(permission: string | undefined): Observable<MiqaatListDtoListResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/Miqaat/GetMiqaats?";
+        if (permission === null)
+            throw new Error("The parameter 'permission' cannot be null.");
+        else if (permission !== undefined)
+            url_ += "Permission=" + encodeURIComponent("" + permission) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMiqaats(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMiqaats(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatListDtoListResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatListDtoListResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetMiqaats(response: HttpResponseBase): Observable<MiqaatListDtoListResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatListDtoListResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatListDtoListResultDto>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    update(body: MiqaatDto | undefined): Observable<MiqaatDto> {
+        let url_ = this.baseUrl + "/api/services/app/Miqaat/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<MiqaatDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Miqaat/Delete?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    getAllPermissions(): Observable<PermissionDtoListResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/Miqaat/GetAllPermissions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllPermissions(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllPermissions(<any>response_);
+                } catch (e) {
+                    return <Observable<PermissionDtoListResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PermissionDtoListResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllPermissions(response: HttpResponseBase): Observable<PermissionDtoListResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PermissionDtoListResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PermissionDtoListResultDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getMiqaatForEdit(id: number | undefined): Observable<GetMiqaatForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/Miqaat/GetMiqaatForEdit?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMiqaatForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMiqaatForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetMiqaatForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetMiqaatForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetMiqaatForEdit(response: HttpResponseBase): Observable<GetMiqaatForEditOutput> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetMiqaatForEditOutput.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetMiqaatForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    get(id: number | undefined): Observable<MiqaatDto> {
+        let url_ = this.baseUrl + "/api/services/app/Miqaat/Get?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<MiqaatDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatDto>(<any>null);
+    }
+
+    /**
+     * @param keyword (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(keyword: string | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<MiqaatDtoPagedResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/Miqaat/GetAll?";
+        if (keyword === null)
+            throw new Error("The parameter 'keyword' cannot be null.");
+        else if (keyword !== undefined)
+            url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatDtoPagedResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatDtoPagedResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<MiqaatDtoPagedResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatDtoPagedResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatDtoPagedResultDto>(<any>null);
+    }
+} 
+//Position2
+
+//Miqaat
+export class CreateMiqaatDto implements ICreateMiqaatDto {
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+
+    constructor(data?: ICreateMiqaatDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.normalizedName = _data["normalizedName"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["grantedPermissions"])) {
+                this.grantedPermissions = [] as any;
+                for (let item of _data["grantedPermissions"])
+                    this.grantedPermissions.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateMiqaatDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMiqaatDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["normalizedName"] = this.normalizedName;
+        data["description"] = this.description;
+        if (Array.isArray(this.grantedPermissions)) {
+            data["grantedPermissions"] = [];
+            for (let item of this.grantedPermissions)
+                data["grantedPermissions"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): CreateMiqaatDto {
+        const json = this.toJSON();
+        let result = new CreateMiqaatDto();
+        result.init(json);
+        return result;
+    }
+}
+export interface ICreateMiqaatDto {
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+}
+//Miqaat end
+
+//Position3
+//Miqaat3
+export class GetMiqaatForEditOutput implements IGetMiqaatForEditOutput {
+    role: MiqaatEditDto;
+    permissions: FlatPermissionDto[] | undefined;
+    grantedPermissionNames: string[] | undefined;
+
+    constructor(data?: IGetMiqaatForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.role = _data["role"] ? MiqaatEditDto.fromJS(_data["role"]) : <any>undefined;
+            if (Array.isArray(_data["permissions"])) {
+                this.permissions = [] as any;
+                for (let item of _data["permissions"])
+                    this.permissions.push(FlatPermissionDto.fromJS(item));
+            }
+            if (Array.isArray(_data["grantedPermissionNames"])) {
+                this.grantedPermissionNames = [] as any;
+                for (let item of _data["grantedPermissionNames"])
+                    this.grantedPermissionNames.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): GetMiqaatForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetMiqaatForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["role"] = this.role ? this.role.toJSON() : <any>undefined;
+        if (Array.isArray(this.permissions)) {
+            data["permissions"] = [];
+            for (let item of this.permissions)
+                data["permissions"].push(item.toJSON());
+        }
+        if (Array.isArray(this.grantedPermissionNames)) {
+            data["grantedPermissionNames"] = [];
+            for (let item of this.grantedPermissionNames)
+                data["grantedPermissionNames"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): GetMiqaatForEditOutput {
+        const json = this.toJSON();
+        let result = new GetMiqaatForEditOutput();
+        result.init(json);
+        return result;
+    }
+}
+export interface IGetMiqaatForEditOutput {
+    role: MiqaatEditDto;
+    permissions: FlatPermissionDto[] | undefined;
+    grantedPermissionNames: string[] | undefined;
+}
+//Miqaat3 End
+
+//Position4
+//Miqaat4
+export class MiqaatDto implements IMiqaatDto {
+    id: number;
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+
+    constructor(data?: IMiqaatDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.normalizedName = _data["normalizedName"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["grantedPermissions"])) {
+                this.grantedPermissions = [] as any;
+                for (let item of _data["grantedPermissions"])
+                    this.grantedPermissions.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): MiqaatDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["normalizedName"] = this.normalizedName;
+        data["description"] = this.description;
+        if (Array.isArray(this.grantedPermissions)) {
+            data["grantedPermissions"] = [];
+            for (let item of this.grantedPermissions)
+                data["grantedPermissions"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): MiqaatDto {
+        const json = this.toJSON();
+        let result = new MiqaatDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatDto {
+    id: number;
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+}
+
+export class MiqaatDtoListResultDto implements IMiqaatDtoListResultDto {
+    items: MiqaatDto[] | undefined;
+
+    constructor(data?: IMiqaatDtoListResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(MiqaatDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MiqaatDtoListResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatDtoListResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): MiqaatDtoListResultDto {
+        const json = this.toJSON();
+        let result = new MiqaatDtoListResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatDtoListResultDto {
+    items: MiqaatDto[] | undefined;
+}
+
+export class MiqaatDtoPagedResultDto implements IMiqaatDtoPagedResultDto {
+    items: MiqaatDto[] | undefined;
+    totalCount: number;
+
+    constructor(data?: IMiqaatDtoPagedResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(MiqaatDto.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+        }
+    }
+
+    static fromJS(data: any): MiqaatDtoPagedResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatDtoPagedResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount;
+        return data; 
+    }
+
+    clone(): MiqaatDtoPagedResultDto {
+        const json = this.toJSON();
+        let result = new MiqaatDtoPagedResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatDtoPagedResultDto {
+    items: MiqaatDto[] | undefined;
+    totalCount: number;
+}
+
+export class MiqaatEditDto implements IMiqaatEditDto {
+    id: number;
+    name: string;
+    displayName: string;
+    description: string | undefined;
+    isStatic: boolean;
+
+    constructor(data?: IMiqaatEditDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.description = _data["description"];
+            this.isStatic = _data["isStatic"];
+        }
+    }
+
+    static fromJS(data: any): MiqaatEditDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatEditDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["description"] = this.description;
+        data["isStatic"] = this.isStatic;
+        return data; 
+    }
+
+    clone(): MiqaatEditDto {
+        const json = this.toJSON();
+        let result = new MiqaatEditDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatEditDto {
+    id: number;
+    name: string;
+    displayName: string;
+    description: string | undefined;
+    isStatic: boolean;
+}
+
+export class MiqaatListDto implements IMiqaatListDto {
+    id: number;
+    name: string | undefined;
+    displayName: string | undefined;
+    isStatic: boolean;
+    isDefault: boolean;
+    creationTime: moment.Moment;
+
+    constructor(data?: IMiqaatListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.isStatic = _data["isStatic"];
+            this.isDefault = _data["isDefault"];
+            this.creationTime = _data["creationTime"] ? moment(_data["creationTime"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): MiqaatListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["isStatic"] = this.isStatic;
+        data["isDefault"] = this.isDefault;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        return data; 
+    }
+
+    clone(): MiqaatListDto {
+        const json = this.toJSON();
+        let result = new MiqaatListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatListDto {
+    id: number;
+    name: string | undefined;
+    displayName: string | undefined;
+    isStatic: boolean;
+    isDefault: boolean;
+    creationTime: moment.Moment;
+}
+
+export class MiqaatListDtoListResultDto implements IMiqaatListDtoListResultDto {
+    items: MiqaatListDto[] | undefined;
+
+    constructor(data?: IMiqaatListDtoListResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(MiqaatListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MiqaatListDtoListResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatListDtoListResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): MiqaatListDtoListResultDto {
+        const json = this.toJSON();
+        let result = new MiqaatListDtoListResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatListDtoListResultDto {
+    items: MiqaatListDto[] | undefined;
+}
+//Miqaat4 End
+@Injectable()
+
+//Position End
+//MiqaatGroup start
+
+//PositionStart
+//Position1
+//floor ah
+@Injectable()
+ export class MiqaatGroupServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    create(body: CreateMiqaatGroupDto | undefined): Observable<MiqaatGroupDto> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatGroup/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatGroupDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatGroupDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<MiqaatGroupDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatGroupDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatGroupDto>(<any>null);
+    }
+
+    /**
+     * @param permission (optional) 
+     * @return Success
+     */
+    getMiqaatGroups(permission: string | undefined): Observable<MiqaatGroupListDtoListResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatGroup/GetMiqaatGroups?";
+        if (permission === null)
+            throw new Error("The parameter 'permission' cannot be null.");
+        else if (permission !== undefined)
+            url_ += "Permission=" + encodeURIComponent("" + permission) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMiqaatGroups(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMiqaatGroups(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatGroupListDtoListResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatGroupListDtoListResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetMiqaatGroups(response: HttpResponseBase): Observable<MiqaatGroupListDtoListResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatGroupListDtoListResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatGroupListDtoListResultDto>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    update(body: MiqaatGroupDto | undefined): Observable<MiqaatGroupDto> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatGroup/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatGroupDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatGroupDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<MiqaatGroupDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatGroupDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatGroupDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatGroup/Delete?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    getAllPermissions(): Observable<PermissionDtoListResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatGroup/GetAllPermissions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllPermissions(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllPermissions(<any>response_);
+                } catch (e) {
+                    return <Observable<PermissionDtoListResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PermissionDtoListResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllPermissions(response: HttpResponseBase): Observable<PermissionDtoListResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PermissionDtoListResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PermissionDtoListResultDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getMiqaatGroupForEdit(id: number | undefined): Observable<GetMiqaatGroupForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatGroup/GetMiqaatGroupForEdit?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMiqaatGroupForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMiqaatGroupForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetMiqaatGroupForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetMiqaatGroupForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetMiqaatGroupForEdit(response: HttpResponseBase): Observable<GetMiqaatGroupForEditOutput> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetMiqaatGroupForEditOutput.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetMiqaatGroupForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    get(id: number | undefined): Observable<MiqaatGroupDto> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatGroup/Get?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatGroupDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatGroupDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<MiqaatGroupDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatGroupDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatGroupDto>(<any>null);
+    }
+
+    /**
+     * @param keyword (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(keyword: string | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<MiqaatGroupDtoPagedResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatGroup/GetAll?";
+        if (keyword === null)
+            throw new Error("The parameter 'keyword' cannot be null.");
+        else if (keyword !== undefined)
+            url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatGroupDtoPagedResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatGroupDtoPagedResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<MiqaatGroupDtoPagedResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatGroupDtoPagedResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatGroupDtoPagedResultDto>(<any>null);
+    }
+} 
+//Position2
+
+//MiqaatGroup
+export class CreateMiqaatGroupDto implements ICreateMiqaatGroupDto {
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+
+    constructor(data?: ICreateMiqaatGroupDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.normalizedName = _data["normalizedName"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["grantedPermissions"])) {
+                this.grantedPermissions = [] as any;
+                for (let item of _data["grantedPermissions"])
+                    this.grantedPermissions.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateMiqaatGroupDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMiqaatGroupDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["normalizedName"] = this.normalizedName;
+        data["description"] = this.description;
+        if (Array.isArray(this.grantedPermissions)) {
+            data["grantedPermissions"] = [];
+            for (let item of this.grantedPermissions)
+                data["grantedPermissions"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): CreateMiqaatGroupDto {
+        const json = this.toJSON();
+        let result = new CreateMiqaatGroupDto();
+        result.init(json);
+        return result;
+    }
+}
+export interface ICreateMiqaatGroupDto {
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+}
+//MiqaatGroup end
+
+//Position3
+//MiqaatGroup3
+export class GetMiqaatGroupForEditOutput implements IGetMiqaatGroupForEditOutput {
+    role: MiqaatGroupEditDto;
+    permissions: FlatPermissionDto[] | undefined;
+    grantedPermissionNames: string[] | undefined;
+
+    constructor(data?: IGetMiqaatGroupForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.role = _data["role"] ? MiqaatGroupEditDto.fromJS(_data["role"]) : <any>undefined;
+            if (Array.isArray(_data["permissions"])) {
+                this.permissions = [] as any;
+                for (let item of _data["permissions"])
+                    this.permissions.push(FlatPermissionDto.fromJS(item));
+            }
+            if (Array.isArray(_data["grantedPermissionNames"])) {
+                this.grantedPermissionNames = [] as any;
+                for (let item of _data["grantedPermissionNames"])
+                    this.grantedPermissionNames.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): GetMiqaatGroupForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetMiqaatGroupForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["role"] = this.role ? this.role.toJSON() : <any>undefined;
+        if (Array.isArray(this.permissions)) {
+            data["permissions"] = [];
+            for (let item of this.permissions)
+                data["permissions"].push(item.toJSON());
+        }
+        if (Array.isArray(this.grantedPermissionNames)) {
+            data["grantedPermissionNames"] = [];
+            for (let item of this.grantedPermissionNames)
+                data["grantedPermissionNames"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): GetMiqaatGroupForEditOutput {
+        const json = this.toJSON();
+        let result = new GetMiqaatGroupForEditOutput();
+        result.init(json);
+        return result;
+    }
+}
+export interface IGetMiqaatGroupForEditOutput {
+    role: MiqaatGroupEditDto;
+    permissions: FlatPermissionDto[] | undefined;
+    grantedPermissionNames: string[] | undefined;
+}
+//MiqaatGroup3 End
+
+//Position4
+//MiqaatGroup4
+export class MiqaatGroupDto implements IMiqaatGroupDto {
+    id: number;
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+
+    constructor(data?: IMiqaatGroupDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.normalizedName = _data["normalizedName"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["grantedPermissions"])) {
+                this.grantedPermissions = [] as any;
+                for (let item of _data["grantedPermissions"])
+                    this.grantedPermissions.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): MiqaatGroupDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatGroupDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["normalizedName"] = this.normalizedName;
+        data["description"] = this.description;
+        if (Array.isArray(this.grantedPermissions)) {
+            data["grantedPermissions"] = [];
+            for (let item of this.grantedPermissions)
+                data["grantedPermissions"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): MiqaatGroupDto {
+        const json = this.toJSON();
+        let result = new MiqaatGroupDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatGroupDto {
+    id: number;
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+}
+
+export class MiqaatGroupDtoListResultDto implements IMiqaatGroupDtoListResultDto {
+    items: MiqaatGroupDto[] | undefined;
+
+    constructor(data?: IMiqaatGroupDtoListResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(MiqaatGroupDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MiqaatGroupDtoListResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatGroupDtoListResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): MiqaatGroupDtoListResultDto {
+        const json = this.toJSON();
+        let result = new MiqaatGroupDtoListResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatGroupDtoListResultDto {
+    items: MiqaatGroupDto[] | undefined;
+}
+
+export class MiqaatGroupDtoPagedResultDto implements IMiqaatGroupDtoPagedResultDto {
+    items: MiqaatGroupDto[] | undefined;
+    totalCount: number;
+
+    constructor(data?: IMiqaatGroupDtoPagedResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(MiqaatGroupDto.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+        }
+    }
+
+    static fromJS(data: any): MiqaatGroupDtoPagedResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatGroupDtoPagedResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount;
+        return data; 
+    }
+
+    clone(): MiqaatGroupDtoPagedResultDto {
+        const json = this.toJSON();
+        let result = new MiqaatGroupDtoPagedResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatGroupDtoPagedResultDto {
+    items: MiqaatGroupDto[] | undefined;
+    totalCount: number;
+}
+
+export class MiqaatGroupEditDto implements IMiqaatGroupEditDto {
+    id: number;
+    name: string;
+    displayName: string;
+    description: string | undefined;
+    isStatic: boolean;
+
+    constructor(data?: IMiqaatGroupEditDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.description = _data["description"];
+            this.isStatic = _data["isStatic"];
+        }
+    }
+
+    static fromJS(data: any): MiqaatGroupEditDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatGroupEditDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["description"] = this.description;
+        data["isStatic"] = this.isStatic;
+        return data; 
+    }
+
+    clone(): MiqaatGroupEditDto {
+        const json = this.toJSON();
+        let result = new MiqaatGroupEditDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatGroupEditDto {
+    id: number;
+    name: string;
+    displayName: string;
+    description: string | undefined;
+    isStatic: boolean;
+}
+
+export class MiqaatGroupListDto implements IMiqaatGroupListDto {
+    id: number;
+    name: string | undefined;
+    displayName: string | undefined;
+    isStatic: boolean;
+    isDefault: boolean;
+    creationTime: moment.Moment;
+
+    constructor(data?: IMiqaatGroupListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.isStatic = _data["isStatic"];
+            this.isDefault = _data["isDefault"];
+            this.creationTime = _data["creationTime"] ? moment(_data["creationTime"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): MiqaatGroupListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatGroupListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["isStatic"] = this.isStatic;
+        data["isDefault"] = this.isDefault;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        return data; 
+    }
+
+    clone(): MiqaatGroupListDto {
+        const json = this.toJSON();
+        let result = new MiqaatGroupListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatGroupListDto {
+    id: number;
+    name: string | undefined;
+    displayName: string | undefined;
+    isStatic: boolean;
+    isDefault: boolean;
+    creationTime: moment.Moment;
+}
+
+export class MiqaatGroupListDtoListResultDto implements IMiqaatGroupListDtoListResultDto {
+    items: MiqaatGroupListDto[] | undefined;
+
+    constructor(data?: IMiqaatGroupListDtoListResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(MiqaatGroupListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MiqaatGroupListDtoListResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatGroupListDtoListResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): MiqaatGroupListDtoListResultDto {
+        const json = this.toJSON();
+        let result = new MiqaatGroupListDtoListResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatGroupListDtoListResultDto {
+    items: MiqaatGroupListDto[] | undefined;
+}
+//MiqaatGroup4 End
+
+
+//PositionStart
+//Position1
+//floor ah
+@Injectable()
+ export class MiqaatFloorServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    create(body: CreateMiqaatFloorDto | undefined): Observable<MiqaatFloorDto> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatFloor/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatFloorDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatFloorDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<MiqaatFloorDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatFloorDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatFloorDto>(<any>null);
+    }
+
+    /**
+     * @param permission (optional) 
+     * @return Success
+     */
+    getMiqaatFloors(permission: string | undefined): Observable<MiqaatFloorListDtoListResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatFloor/GetMiqaatFloors?";
+        if (permission === null)
+            throw new Error("The parameter 'permission' cannot be null.");
+        else if (permission !== undefined)
+            url_ += "Permission=" + encodeURIComponent("" + permission) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMiqaatFloors(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMiqaatFloors(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatFloorListDtoListResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatFloorListDtoListResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetMiqaatFloors(response: HttpResponseBase): Observable<MiqaatFloorListDtoListResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatFloorListDtoListResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatFloorListDtoListResultDto>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    update(body: MiqaatFloorDto | undefined): Observable<MiqaatFloorDto> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatFloor/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatFloorDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatFloorDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<MiqaatFloorDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatFloorDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatFloorDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatFloor/Delete?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    getAllPermissions(): Observable<PermissionDtoListResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatFloor/GetAllPermissions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllPermissions(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllPermissions(<any>response_);
+                } catch (e) {
+                    return <Observable<PermissionDtoListResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PermissionDtoListResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllPermissions(response: HttpResponseBase): Observable<PermissionDtoListResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PermissionDtoListResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PermissionDtoListResultDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getMiqaatFloorForEdit(id: number | undefined): Observable<GetMiqaatFloorForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatFloor/GetMiqaatFloorForEdit?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMiqaatFloorForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMiqaatFloorForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetMiqaatFloorForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetMiqaatFloorForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetMiqaatFloorForEdit(response: HttpResponseBase): Observable<GetMiqaatFloorForEditOutput> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetMiqaatFloorForEditOutput.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetMiqaatFloorForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    get(id: number | undefined): Observable<MiqaatFloorDto> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatFloor/Get?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatFloorDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatFloorDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<MiqaatFloorDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatFloorDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatFloorDto>(<any>null);
+    }
+
+    /**
+     * @param keyword (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(keyword: string | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<MiqaatFloorDtoPagedResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/MiqaatFloor/GetAll?";
+        if (keyword === null)
+            throw new Error("The parameter 'keyword' cannot be null.");
+        else if (keyword !== undefined)
+            url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<MiqaatFloorDtoPagedResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MiqaatFloorDtoPagedResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<MiqaatFloorDtoPagedResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MiqaatFloorDtoPagedResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MiqaatFloorDtoPagedResultDto>(<any>null);
+    }
+} 
+//Position2
+
+//MiqaatFloor
+export class CreateMiqaatFloorDto implements ICreateMiqaatFloorDto {
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+
+    constructor(data?: ICreateMiqaatFloorDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.normalizedName = _data["normalizedName"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["grantedPermissions"])) {
+                this.grantedPermissions = [] as any;
+                for (let item of _data["grantedPermissions"])
+                    this.grantedPermissions.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateMiqaatFloorDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMiqaatFloorDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["normalizedName"] = this.normalizedName;
+        data["description"] = this.description;
+        if (Array.isArray(this.grantedPermissions)) {
+            data["grantedPermissions"] = [];
+            for (let item of this.grantedPermissions)
+                data["grantedPermissions"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): CreateMiqaatFloorDto {
+        const json = this.toJSON();
+        let result = new CreateMiqaatFloorDto();
+        result.init(json);
+        return result;
+    }
+}
+export interface ICreateMiqaatFloorDto {
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+}
+//MiqaatFloor end
+
+//Position3
+//MiqaatFloor3
+export class GetMiqaatFloorForEditOutput implements IGetMiqaatFloorForEditOutput {
+    role: MiqaatFloorEditDto;
+    permissions: FlatPermissionDto[] | undefined;
+    grantedPermissionNames: string[] | undefined;
+
+    constructor(data?: IGetMiqaatFloorForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.role = _data["role"] ? MiqaatFloorEditDto.fromJS(_data["role"]) : <any>undefined;
+            if (Array.isArray(_data["permissions"])) {
+                this.permissions = [] as any;
+                for (let item of _data["permissions"])
+                    this.permissions.push(FlatPermissionDto.fromJS(item));
+            }
+            if (Array.isArray(_data["grantedPermissionNames"])) {
+                this.grantedPermissionNames = [] as any;
+                for (let item of _data["grantedPermissionNames"])
+                    this.grantedPermissionNames.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): GetMiqaatFloorForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetMiqaatFloorForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["role"] = this.role ? this.role.toJSON() : <any>undefined;
+        if (Array.isArray(this.permissions)) {
+            data["permissions"] = [];
+            for (let item of this.permissions)
+                data["permissions"].push(item.toJSON());
+        }
+        if (Array.isArray(this.grantedPermissionNames)) {
+            data["grantedPermissionNames"] = [];
+            for (let item of this.grantedPermissionNames)
+                data["grantedPermissionNames"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): GetMiqaatFloorForEditOutput {
+        const json = this.toJSON();
+        let result = new GetMiqaatFloorForEditOutput();
+        result.init(json);
+        return result;
+    }
+}
+export interface IGetMiqaatFloorForEditOutput {
+    role: MiqaatFloorEditDto;
+    permissions: FlatPermissionDto[] | undefined;
+    grantedPermissionNames: string[] | undefined;
+}
+//MiqaatFloor3 End
+
+//Position4
+//MiqaatFloor4
+export class MiqaatFloorDto implements IMiqaatFloorDto {
+    id: number;
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+
+    constructor(data?: IMiqaatFloorDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.normalizedName = _data["normalizedName"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["grantedPermissions"])) {
+                this.grantedPermissions = [] as any;
+                for (let item of _data["grantedPermissions"])
+                    this.grantedPermissions.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): MiqaatFloorDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatFloorDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["normalizedName"] = this.normalizedName;
+        data["description"] = this.description;
+        if (Array.isArray(this.grantedPermissions)) {
+            data["grantedPermissions"] = [];
+            for (let item of this.grantedPermissions)
+                data["grantedPermissions"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): MiqaatFloorDto {
+        const json = this.toJSON();
+        let result = new MiqaatFloorDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatFloorDto {
+    id: number;
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+}
+
+export class MiqaatFloorDtoListResultDto implements IMiqaatFloorDtoListResultDto {
+    items: MiqaatFloorDto[] | undefined;
+
+    constructor(data?: IMiqaatFloorDtoListResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(MiqaatFloorDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MiqaatFloorDtoListResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatFloorDtoListResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): MiqaatFloorDtoListResultDto {
+        const json = this.toJSON();
+        let result = new MiqaatFloorDtoListResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatFloorDtoListResultDto {
+    items: MiqaatFloorDto[] | undefined;
+}
+
+export class MiqaatFloorDtoPagedResultDto implements IMiqaatFloorDtoPagedResultDto {
+    items: MiqaatFloorDto[] | undefined;
+    totalCount: number;
+
+    constructor(data?: IMiqaatFloorDtoPagedResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(MiqaatFloorDto.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+        }
+    }
+
+    static fromJS(data: any): MiqaatFloorDtoPagedResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatFloorDtoPagedResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount;
+        return data; 
+    }
+
+    clone(): MiqaatFloorDtoPagedResultDto {
+        const json = this.toJSON();
+        let result = new MiqaatFloorDtoPagedResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatFloorDtoPagedResultDto {
+    items: MiqaatFloorDto[] | undefined;
+    totalCount: number;
+}
+
+export class MiqaatFloorEditDto implements IMiqaatFloorEditDto {
+    id: number;
+    name: string;
+    displayName: string;
+    description: string | undefined;
+    isStatic: boolean;
+
+    constructor(data?: IMiqaatFloorEditDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.description = _data["description"];
+            this.isStatic = _data["isStatic"];
+        }
+    }
+
+    static fromJS(data: any): MiqaatFloorEditDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatFloorEditDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["description"] = this.description;
+        data["isStatic"] = this.isStatic;
+        return data; 
+    }
+
+    clone(): MiqaatFloorEditDto {
+        const json = this.toJSON();
+        let result = new MiqaatFloorEditDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatFloorEditDto {
+    id: number;
+    name: string;
+    displayName: string;
+    description: string | undefined;
+    isStatic: boolean;
+}
+
+export class MiqaatFloorListDto implements IMiqaatFloorListDto {
+    id: number;
+    name: string | undefined;
+    displayName: string | undefined;
+    isStatic: boolean;
+    isDefault: boolean;
+    creationTime: moment.Moment;
+
+    constructor(data?: IMiqaatFloorListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.isStatic = _data["isStatic"];
+            this.isDefault = _data["isDefault"];
+            this.creationTime = _data["creationTime"] ? moment(_data["creationTime"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): MiqaatFloorListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatFloorListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["isStatic"] = this.isStatic;
+        data["isDefault"] = this.isDefault;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        return data; 
+    }
+
+    clone(): MiqaatFloorListDto {
+        const json = this.toJSON();
+        let result = new MiqaatFloorListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatFloorListDto {
+    id: number;
+    name: string | undefined;
+    displayName: string | undefined;
+    isStatic: boolean;
+    isDefault: boolean;
+    creationTime: moment.Moment;
+}
+
+export class MiqaatFloorListDtoListResultDto implements IMiqaatFloorListDtoListResultDto {
+    items: MiqaatFloorListDto[] | undefined;
+
+    constructor(data?: IMiqaatFloorListDtoListResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(MiqaatFloorListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MiqaatFloorListDtoListResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MiqaatFloorListDtoListResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): MiqaatFloorListDtoListResultDto {
+        const json = this.toJSON();
+        let result = new MiqaatFloorListDtoListResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMiqaatFloorListDtoListResultDto {
+    items: MiqaatFloorListDto[] | undefined;
+}
+//MiqaatFloor4 End
+
+
+//PositionStart
+//Position1
+//floor ah
+@Injectable()
+ export class SeatReservationServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    create(body: CreateSeatReservationDto | undefined): Observable<SeatReservationDto> {
+        let url_ = this.baseUrl + "/api/services/app/SeatReservation/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<SeatReservationDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<SeatReservationDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<SeatReservationDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SeatReservationDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SeatReservationDto>(<any>null);
+    }
+
+    /**
+     * @param permission (optional) 
+     * @return Success
+     */
+    getSeatReservations(permission: string | undefined): Observable<SeatReservationListDtoListResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/SeatReservation/GetSeatReservations?";
+        if (permission === null)
+            throw new Error("The parameter 'permission' cannot be null.");
+        else if (permission !== undefined)
+            url_ += "Permission=" + encodeURIComponent("" + permission) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSeatReservations(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSeatReservations(<any>response_);
+                } catch (e) {
+                    return <Observable<SeatReservationListDtoListResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<SeatReservationListDtoListResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetSeatReservations(response: HttpResponseBase): Observable<SeatReservationListDtoListResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SeatReservationListDtoListResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SeatReservationListDtoListResultDto>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    update(body: SeatReservationDto | undefined): Observable<SeatReservationDto> {
+        let url_ = this.baseUrl + "/api/services/app/SeatReservation/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<SeatReservationDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<SeatReservationDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<SeatReservationDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SeatReservationDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SeatReservationDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/SeatReservation/Delete?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    getAllPermissions(): Observable<PermissionDtoListResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/SeatReservation/GetAllPermissions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllPermissions(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllPermissions(<any>response_);
+                } catch (e) {
+                    return <Observable<PermissionDtoListResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PermissionDtoListResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllPermissions(response: HttpResponseBase): Observable<PermissionDtoListResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PermissionDtoListResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PermissionDtoListResultDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getSeatReservationForEdit(id: number | undefined): Observable<GetSeatReservationForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/SeatReservation/GetSeatReservationForEdit?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSeatReservationForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSeatReservationForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetSeatReservationForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetSeatReservationForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetSeatReservationForEdit(response: HttpResponseBase): Observable<GetSeatReservationForEditOutput> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetSeatReservationForEditOutput.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetSeatReservationForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    get(id: number | undefined): Observable<SeatReservationDto> {
+        let url_ = this.baseUrl + "/api/services/app/SeatReservation/Get?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<SeatReservationDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<SeatReservationDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<SeatReservationDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SeatReservationDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SeatReservationDto>(<any>null);
+    }
+
+    /**
+     * @param keyword (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(keyword: string | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<SeatReservationDtoPagedResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/SeatReservation/GetAll?";
+        if (keyword === null)
+            throw new Error("The parameter 'keyword' cannot be null.");
+        else if (keyword !== undefined)
+            url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<SeatReservationDtoPagedResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<SeatReservationDtoPagedResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<SeatReservationDtoPagedResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SeatReservationDtoPagedResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SeatReservationDtoPagedResultDto>(<any>null);
+    }
+} 
+//Position2
+
+//SeatReservation
+export class CreateSeatReservationDto implements ICreateSeatReservationDto {
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+
+    constructor(data?: ICreateSeatReservationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.normalizedName = _data["normalizedName"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["grantedPermissions"])) {
+                this.grantedPermissions = [] as any;
+                for (let item of _data["grantedPermissions"])
+                    this.grantedPermissions.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateSeatReservationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateSeatReservationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["normalizedName"] = this.normalizedName;
+        data["description"] = this.description;
+        if (Array.isArray(this.grantedPermissions)) {
+            data["grantedPermissions"] = [];
+            for (let item of this.grantedPermissions)
+                data["grantedPermissions"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): CreateSeatReservationDto {
+        const json = this.toJSON();
+        let result = new CreateSeatReservationDto();
+        result.init(json);
+        return result;
+    }
+}
+export interface ICreateSeatReservationDto {
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+}
+//SeatReservation end
+
+//Position3
+//SeatReservation3
+export class GetSeatReservationForEditOutput implements IGetSeatReservationForEditOutput {
+    role: SeatReservationEditDto;
+    permissions: FlatPermissionDto[] | undefined;
+    grantedPermissionNames: string[] | undefined;
+
+    constructor(data?: IGetSeatReservationForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.role = _data["role"] ? SeatReservationEditDto.fromJS(_data["role"]) : <any>undefined;
+            if (Array.isArray(_data["permissions"])) {
+                this.permissions = [] as any;
+                for (let item of _data["permissions"])
+                    this.permissions.push(FlatPermissionDto.fromJS(item));
+            }
+            if (Array.isArray(_data["grantedPermissionNames"])) {
+                this.grantedPermissionNames = [] as any;
+                for (let item of _data["grantedPermissionNames"])
+                    this.grantedPermissionNames.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): GetSeatReservationForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetSeatReservationForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["role"] = this.role ? this.role.toJSON() : <any>undefined;
+        if (Array.isArray(this.permissions)) {
+            data["permissions"] = [];
+            for (let item of this.permissions)
+                data["permissions"].push(item.toJSON());
+        }
+        if (Array.isArray(this.grantedPermissionNames)) {
+            data["grantedPermissionNames"] = [];
+            for (let item of this.grantedPermissionNames)
+                data["grantedPermissionNames"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): GetSeatReservationForEditOutput {
+        const json = this.toJSON();
+        let result = new GetSeatReservationForEditOutput();
+        result.init(json);
+        return result;
+    }
+}
+export interface IGetSeatReservationForEditOutput {
+    role: SeatReservationEditDto;
+    permissions: FlatPermissionDto[] | undefined;
+    grantedPermissionNames: string[] | undefined;
+}
+//SeatReservation3 End
+
+//Position4
+//SeatReservation4
+export class SeatReservationDto implements ISeatReservationDto {
+    id: number;
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+
+    constructor(data?: ISeatReservationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.normalizedName = _data["normalizedName"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["grantedPermissions"])) {
+                this.grantedPermissions = [] as any;
+                for (let item of _data["grantedPermissions"])
+                    this.grantedPermissions.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): SeatReservationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SeatReservationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["normalizedName"] = this.normalizedName;
+        data["description"] = this.description;
+        if (Array.isArray(this.grantedPermissions)) {
+            data["grantedPermissions"] = [];
+            for (let item of this.grantedPermissions)
+                data["grantedPermissions"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): SeatReservationDto {
+        const json = this.toJSON();
+        let result = new SeatReservationDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ISeatReservationDto {
+    id: number;
+    name: string;
+    displayName: string;
+    normalizedName: string | undefined;
+    description: string | undefined;
+    grantedPermissions: string[] | undefined;
+}
+
+export class SeatReservationDtoListResultDto implements ISeatReservationDtoListResultDto {
+    items: SeatReservationDto[] | undefined;
+
+    constructor(data?: ISeatReservationDtoListResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(SeatReservationDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SeatReservationDtoListResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SeatReservationDtoListResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): SeatReservationDtoListResultDto {
+        const json = this.toJSON();
+        let result = new SeatReservationDtoListResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ISeatReservationDtoListResultDto {
+    items: SeatReservationDto[] | undefined;
+}
+
+export class SeatReservationDtoPagedResultDto implements ISeatReservationDtoPagedResultDto {
+    items: SeatReservationDto[] | undefined;
+    totalCount: number;
+
+    constructor(data?: ISeatReservationDtoPagedResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(SeatReservationDto.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+        }
+    }
+
+    static fromJS(data: any): SeatReservationDtoPagedResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SeatReservationDtoPagedResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount;
+        return data; 
+    }
+
+    clone(): SeatReservationDtoPagedResultDto {
+        const json = this.toJSON();
+        let result = new SeatReservationDtoPagedResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ISeatReservationDtoPagedResultDto {
+    items: SeatReservationDto[] | undefined;
+    totalCount: number;
+}
+
+export class SeatReservationEditDto implements ISeatReservationEditDto {
+    id: number;
+    name: string;
+    displayName: string;
+    description: string | undefined;
+    isStatic: boolean;
+
+    constructor(data?: ISeatReservationEditDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.description = _data["description"];
+            this.isStatic = _data["isStatic"];
+        }
+    }
+
+    static fromJS(data: any): SeatReservationEditDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SeatReservationEditDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["description"] = this.description;
+        data["isStatic"] = this.isStatic;
+        return data; 
+    }
+
+    clone(): SeatReservationEditDto {
+        const json = this.toJSON();
+        let result = new SeatReservationEditDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ISeatReservationEditDto {
+    id: number;
+    name: string;
+    displayName: string;
+    description: string | undefined;
+    isStatic: boolean;
+}
+
+export class SeatReservationListDto implements ISeatReservationListDto {
+    id: number;
+    name: string | undefined;
+    displayName: string | undefined;
+    isStatic: boolean;
+    isDefault: boolean;
+    creationTime: moment.Moment;
+
+    constructor(data?: ISeatReservationListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.isStatic = _data["isStatic"];
+            this.isDefault = _data["isDefault"];
+            this.creationTime = _data["creationTime"] ? moment(_data["creationTime"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): SeatReservationListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SeatReservationListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["isStatic"] = this.isStatic;
+        data["isDefault"] = this.isDefault;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        return data; 
+    }
+
+    clone(): SeatReservationListDto {
+        const json = this.toJSON();
+        let result = new SeatReservationListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ISeatReservationListDto {
+    id: number;
+    name: string | undefined;
+    displayName: string | undefined;
+    isStatic: boolean;
+    isDefault: boolean;
+    creationTime: moment.Moment;
+}
+
+export class SeatReservationListDtoListResultDto implements ISeatReservationListDtoListResultDto {
+    items: SeatReservationListDto[] | undefined;
+
+    constructor(data?: ISeatReservationListDtoListResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(SeatReservationListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SeatReservationListDtoListResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SeatReservationListDtoListResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): SeatReservationListDtoListResultDto {
+        const json = this.toJSON();
+        let result = new SeatReservationListDtoListResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ISeatReservationListDtoListResultDto {
+    items: SeatReservationListDto[] | undefined;
+}
+//SeatReservation4 End
+@Injectable()
+
+//Position End
+
+@Injectable()
+
+//Position End
 
 
 @Injectable()
+
+//Position End
+
+//MiqaatGroup end
+
 export class SessionServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -2670,73 +7537,8 @@ export interface ICreateRoleDto {
     description: string | undefined;
     grantedPermissions: string[] | undefined;
 }
-//masjid
 
-export class CreateMasjidDto implements ICreateMasjidDto {
-    name: string;
-    displayName: string;
-    normalizedName: string | undefined;
-    description: string | undefined;
-    grantedPermissions: string[] | undefined;
 
-    constructor(data?: ICreateMasjidDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.displayName = _data["displayName"];
-            this.normalizedName = _data["normalizedName"];
-            this.description = _data["description"];
-            if (Array.isArray(_data["grantedPermissions"])) {
-                this.grantedPermissions = [] as any;
-                for (let item of _data["grantedPermissions"])
-                    this.grantedPermissions.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): CreateMasjidDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateMasjidDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["displayName"] = this.displayName;
-        data["normalizedName"] = this.normalizedName;
-        data["description"] = this.description;
-        if (Array.isArray(this.grantedPermissions)) {
-            data["grantedPermissions"] = [];
-            for (let item of this.grantedPermissions)
-                data["grantedPermissions"].push(item);
-        }
-        return data; 
-    }
-
-    clone(): CreateMasjidDto {
-        const json = this.toJSON();
-        let result = new CreateMasjidDto();
-        result.init(json);
-        return result;
-    }
-}
-export interface ICreateMasjidDto {
-    name: string;
-    displayName: string;
-    normalizedName: string | undefined;
-    description: string | undefined;
-    grantedPermissions: string[] | undefined;
-}
 export class CreateTenantDto implements ICreateTenantDto {
     tenancyName: string;
     name: string;
@@ -4359,6 +9161,8 @@ export class MasjidListDtoListResultDto implements IMasjidListDtoListResultDto {
 export interface IMasjidListDtoListResultDto {
     items: MasjidListDto[] | undefined;
 }
+// Masjid4 End
+
 
 
 export enum TenantAvailabilityState {

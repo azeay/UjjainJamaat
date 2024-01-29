@@ -40,6 +40,11 @@ import { SidebarUserPanelComponent } from './layout/sidebar-user-panel.component
 import { SidebarMenuComponent } from './layout/sidebar-menu.component';
 import { MasjidListComponent } from './masjid-list/masjid-list.component';
 import { MasjidDetailsComponent } from './masjid-list/masjid-details/masjid-details.component';
+import { FloorsComponent } from './floors/floors.component';
+import { MiqaatsComponent } from './miqaats/miqaats.component';
+import { MiqaatGroupsComponent } from './miqaat-groups/miqaat-groups.component';
+import { MiqaatFloorsComponent } from './miqaat-floors/miqaat-floors.component';
+import { SeatReservationsComponent } from './seat-reservations/seat-reservations.component';
 // import { MasjidsComponent } from './masjids/masjids.component';
 // import { MasjidDetailComponent } from './masjids/masjid-detail/masjid-detail.component';
 // import { FloorComponent } from './floor/floor.component';
@@ -83,7 +88,7 @@ import { MasjidDetailsComponent } from './masjid-list/masjid-details/masjid-deta
     SidebarLogoComponent,
     SidebarUserPanelComponent,
     SidebarMenuComponent,    
-    MasjidListComponent, MasjidDetailsComponent,
+    MasjidListComponent, MasjidDetailsComponent, FloorsComponent, MiqaatsComponent, MiqaatGroupsComponent, MiqaatFloorsComponent, SeatReservationsComponent,
     
     // MasjidDetailComponent,
     // FloorComponent,
