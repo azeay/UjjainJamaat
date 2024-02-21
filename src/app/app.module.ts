@@ -45,6 +45,10 @@ import { MiqaatsComponent } from './miqaats/miqaats.component';
 import { MiqaatGroupsComponent } from './miqaat-groups/miqaat-groups.component';
 import { MiqaatFloorsComponent } from './miqaat-floors/miqaat-floors.component';
 import { SeatReservationsComponent } from './seat-reservations/seat-reservations.component';
+import { FloorDetailsComponent } from './floors/floor-details/floor-details.component';
+import { MiqaatDetailsComponent } from './miqaats/miqaat-details/miqaat-details.component';
+import { MiqaatGroupDetailsComponent } from './miqaat-groups/miqaat-group-details/miqaat-group-details.component';
+import { MiqaatFloorDetailsComponent } from './miqaat-floors/miqaat-floor-details/miqaat-floor-details.component';
 // import { MasjidsComponent } from './masjids/masjids.component';
 // import { MasjidDetailComponent } from './masjids/masjid-detail/masjid-detail.component';
 // import { FloorComponent } from './floor/floor.component';
@@ -88,7 +92,7 @@ import { SeatReservationsComponent } from './seat-reservations/seat-reservations
     SidebarLogoComponent,
     SidebarUserPanelComponent,
     SidebarMenuComponent,    
-    MasjidListComponent, MasjidDetailsComponent, FloorsComponent, MiqaatsComponent, MiqaatGroupsComponent, MiqaatFloorsComponent, SeatReservationsComponent,
+    MasjidListComponent, MasjidDetailsComponent, FloorsComponent, MiqaatsComponent, MiqaatGroupsComponent, MiqaatFloorsComponent, SeatReservationsComponent, FloorDetailsComponent, MiqaatDetailsComponent, MiqaatGroupDetailsComponent, MiqaatFloorDetailsComponent,
     
     // MasjidDetailComponent,
     // FloorComponent,
